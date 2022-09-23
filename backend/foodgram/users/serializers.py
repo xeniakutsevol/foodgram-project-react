@@ -20,24 +20,26 @@ class UserSerializer(BaseUserSerializer):
             return Subscription.objects.filter(user=user, subscription=obj).exists()
         return False
 
-class SubscriptionSerializer(BaseUserSerializer):
-    # импорт здесь, чтобы избежать circular import error
-    from recipes.serializers import RecipeShortSerializer
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    email = serializers.ReadOnlyField(source='subscription.email')
+    id = serializers.ReadOnlyField(source='subscription.id')
+    username = serializers.ReadOnlyField(source='subscription.username')
+    first_name = serializers.ReadOnlyField(source='subscription.first_name')
+    last_name = serializers.ReadOnlyField(source='subscription.last_name')
     is_subscribed = serializers.SerializerMethodField()
-    recipes = RecipeShortSerializer(many=True)
-    recipes_count = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.ReadOnlyField(source='subscription.recipes.count')
 
     class Meta:
-        model = User
+        model = Subscription
         fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed', 'recipes', 'recipes_count')
     
     def get_is_subscribed(self, obj):
-        user = self.context['request'].user
-        if user.is_authenticated:
-            return Subscription.objects.filter(user=user, subscription=obj).exists()
-        return False
+        return Subscription.objects.filter(user=obj.user, subscription=obj.subscription).exists()
     
-    def get_recipes_count(self, obj):
-        user = self.context['request'].user
-        if user.is_authenticated:
-            return Recipe.objects.filter(author=obj).count()
+    def get_recipes(self, obj):
+        # импорт здесь, чтобы избежать circular import error
+        from recipes.serializers import RecipeShortSerializer
+        queryset = Recipe.objects.filter(author=obj.subscription)
+        return RecipeShortSerializer(queryset, many=True).data

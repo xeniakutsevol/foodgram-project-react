@@ -35,7 +35,7 @@ class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='main_user')
     subscription = models.ForeignKey(User, on_delete=models.CASCADE,
-                                     related_name='subsription_user')
+                                     related_name='subscription_user')
 
     class Meta:
         constraints = [

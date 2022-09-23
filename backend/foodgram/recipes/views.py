@@ -84,7 +84,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = self.request.user
         obj_exists = ShoppingCart.objects.filter(recipe=recipe, user=user).exists()
         serializer = self.get_serializer(data=request.data)
-        #serializer = RecipeShortSerializer(data=request.data)
         if request.method == 'POST':
             if not obj_exists:
                 ShoppingCart.objects.create(recipe=recipe, user=user)
@@ -142,17 +141,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
             else:
                 Favorited.objects.filter(recipe=recipe, user=user).delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
-                
-            
-
-
-
-
-
-
-# class CreateDestroyViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin,
-#                            viewsets.GenericViewSet):
-#     pass
-
-
-# class ShoppingCartViewSet(CreateDestroyViewSet):

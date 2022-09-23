@@ -142,8 +142,9 @@ DJOSER = {
         "token_create": ["rest_framework.permissions.AllowAny"],
         "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
     },
-    # "SERIALIZERS": {
-    #     'current_user': 'users.serializers.UserSerializer'
-    # },
+    "SERIALIZERS": {
+        'current_user': 'users.serializers.UserSerializer',
+        'user': 'users.serializers.UserSerializer'
+    },
     "HIDE_USERS": False,
 }

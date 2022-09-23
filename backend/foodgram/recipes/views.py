@@ -2,9 +2,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions, filters, mixins, status
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Ingredient, IngredientInRecipe, Recipe, Tag, ShoppingCart
-from .serializers import ShoppingCartSerializer, TagSerializer, IngredientSerializer, RecipeReadSerializer, RecipeWriteSerializer
-from .permissions import IsAuthorPermission, ShoppingCartPermission
+from .models import Favorited, Ingredient, IngredientInRecipe, Recipe, Tag, ShoppingCart
+from .serializers import RecipeShortSerializer, TagSerializer, IngredientSerializer, RecipeReadSerializer, RecipeWriteSerializer
+from .permissions import IsAuthorPermission, ShoppingCartPermission, FavoritedPermission
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Sum
@@ -59,8 +59,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeReadSerializer
         if self.action == 'retrieve':
             return RecipeReadSerializer
-        elif self.action == 'get_shopping_cart':
-            return ShoppingCartSerializer
+        elif self.action in ('add_remove_shopping_cart', 'get_shopping_cart', 'add_remove_favorite'):
+            return RecipeShortSerializer
         return RecipeWriteSerializer
     
     def get_permissions(self):
@@ -70,6 +70,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             self.permission_classes = (permissions.AllowAny, )
         elif self.action == 'add_remove_shopping_cart' and self.request.method == 'DELETE':
             self.permission_classes = (ShoppingCartPermission, )
+        elif self.action == 'add_remove_favorite' and self.request.method == 'DELETE':
+            self.permission_classes = (FavoritedPermission, )
         elif self.request.method in ('PATCH', 'DELETE'):
             self.permission_classes = (IsAuthorPermission, )
         else:
@@ -81,7 +83,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=pk)
         user = self.request.user
         obj_exists = ShoppingCart.objects.filter(recipe=recipe, user=user).exists()
-        serializer = ShoppingCartSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
+        #serializer = RecipeShortSerializer(data=request.data)
         if request.method == 'POST':
             if not obj_exists:
                 ShoppingCart.objects.create(recipe=recipe, user=user)
@@ -119,7 +122,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
         writer.writerows(output)
         return response
 
-
+    @action(methods=['post', 'delete'], detail=True, url_path='favorite')
+    def add_remove_favorite(self, request, pk=None):
+        recipe = get_object_or_404(Recipe, id=pk)
+        user = self.request.user
+        obj_exists = Favorited.objects.filter(recipe=recipe, user=user).exists()
+        serializer = self.get_serializer(data=request.data)
+        if request.method == 'POST':
+            if not obj_exists:
+                Favorited.objects.create(recipe=recipe, user=user)
+                serializer.is_valid()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({'errors': 'Рецепт уже в избранном.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        elif request.method == 'DELETE':
+            if not obj_exists:
+                return Response({'errors': 'Рецепт не был в избранном.'},
+                                status=status.HTTP_400_BAD_REQUEST)
+            else:
+                Favorited.objects.filter(recipe=recipe, user=user).delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
                 
             
 

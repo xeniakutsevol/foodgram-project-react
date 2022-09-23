@@ -115,9 +115,9 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         return RecipeReadSerializer(instance, context=context).data
 
 
-class ShoppingCartSerializer(serializers.ModelSerializer):
+class RecipeShortSerializer(serializers.ModelSerializer):
     image = serializers.ImageField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'text', 'cooking_time')
+        fields = ('id', 'name', 'image', 'cooking_time')

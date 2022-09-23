@@ -29,3 +29,22 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='main_user')
+    subscription = models.ForeignKey(User, on_delete=models.CASCADE,
+                                     related_name='subsription_user')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                name="unique_relationship",
+                fields=["user", "subscription"],
+            ),
+            models.CheckConstraint(
+                name="prevent_self_follow",
+                check=~models.Q(user=models.F("subscription")),
+            ),
+        ]

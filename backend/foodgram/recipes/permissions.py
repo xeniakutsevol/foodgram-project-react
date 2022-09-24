@@ -1,5 +1,6 @@
 from rest_framework import permissions
-from .models import ShoppingCart, Favorited
+
+from .models import Favorited, ShoppingCart
 
 
 class IsAuthorPermission(permissions.BasePermission):

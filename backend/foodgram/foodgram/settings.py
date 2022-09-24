@@ -128,13 +128,13 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     "PERMISSIONS": {
-        'activation': ['rest_framework.permissions.AllowAny'],
-        'password_reset': ["djoser.permissions.CurrentUserOrAdmin"],
-        'password_reset_confirm': ["djoser.permissions.CurrentUserOrAdmin"],
-        'set_password': ["djoser.permissions.CurrentUserOrAdmin"],
-        'username_reset': ["djoser.permissions.CurrentUserOrAdmin"],
-        'username_reset_confirm': ["djoser.permissions.CurrentUserOrAdmin"],
-        'set_username': ["djoser.permissions.CurrentUserOrAdmin"],
+        "activation": ["rest_framework.permissions.AllowAny"],
+        "password_reset": ["djoser.permissions.CurrentUserOrAdmin"],
+        "password_reset_confirm": ["djoser.permissions.CurrentUserOrAdmin"],
+        "set_password": ["djoser.permissions.CurrentUserOrAdmin"],
+        "username_reset": ["djoser.permissions.CurrentUserOrAdmin"],
+        "username_reset_confirm": ["djoser.permissions.CurrentUserOrAdmin"],
+        "set_username": ["djoser.permissions.CurrentUserOrAdmin"],
         "user_create": ["rest_framework.permissions.AllowAny"],
         "user_delete": ["djoser.permissions.CurrentUserOrAdmin"],
         "user": ["users.permissions.UsersPermission"],
@@ -143,8 +143,8 @@ DJOSER = {
         "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
     },
     "SERIALIZERS": {
-        'current_user': 'users.serializers.UserSerializer',
-        'user': 'users.serializers.UserSerializer'
+        "current_user": "users.serializers.UserSerializer",
+        "user": "users.serializers.UserSerializer",
     },
     "HIDE_USERS": False,
 }

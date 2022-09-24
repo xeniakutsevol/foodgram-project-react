@@ -57,7 +57,8 @@ class IngredientInRecipe(models.Model):
     amount = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        return f'{self.ingredient} - {self.amount}'
+        return (f"{self.recipe.name}: {self.ingredient} "
+                f"{self.ingredient.measurement_unit}, {self.amount}")
 
 
 class Favorited(models.Model):
@@ -66,9 +67,15 @@ class Favorited(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='favorited')
 
+    def __str__(self):
+        return self.recipe.name
+
 
 class ShoppingCart(models.Model):
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name='shopping_cart')
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='shopping_cart')
+
+    def __str__(self):
+        return self.recipe.name

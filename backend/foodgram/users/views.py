@@ -7,6 +7,7 @@ from rest_framework import status, permissions
 from .serializers import SubscriptionSerializer, UserSerializer
 from django.contrib.auth import get_user_model
 from django.forms.models import model_to_dict
+from rest_framework import pagination
 
 User = get_user_model()
 
@@ -34,3 +35,12 @@ class UserViewSet(BaseUserViewSet):
             else:
                 Subscription.objects.filter(subscription=subscription, user=user).delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['get'], detail=False, url_path='subscriptions', permission_classes=(permissions.IsAuthenticated,))
+    def get_subscriptions(self, request):
+        user = self.request.user
+        queryset = Subscription.objects.filter(user=user)
+        page = self.paginate_queryset(queryset)
+        serializer = SubscriptionSerializer(data=page, many=True)
+        serializer.is_valid()
+        return self.get_paginated_response(serializer.data)

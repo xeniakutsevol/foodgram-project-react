@@ -42,9 +42,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         is_in_shopping_cart = self.request.query_params.get(
                                 "is_in_shopping_cart", None)
         tags_ids = self.request.query_params.getlist("tags", None)
-        if is_favorited == "1":
+        if is_favorited == 1:
             queryset = queryset.filter(favorited=True)
-        if is_in_shopping_cart == "1":
+        if is_in_shopping_cart == 1:
             queryset = queryset.filter(shopping_cart=True)
         if tags_ids:
             queryset = queryset.filter(tags__slug__in=tags_ids).distinct()
@@ -161,7 +161,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(methods=['post', 'delete'], detail=True, url_path='favorite')
     def add_remove_favorite(self, request, pk=None):
-        print(request.data)
         recipe = get_object_or_404(Recipe, id=pk)
         user = self.request.user
         obj_exists = Favorited.objects.filter(

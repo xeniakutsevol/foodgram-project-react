@@ -24,6 +24,14 @@ class UserSerializer(BaseUserSerializer):
         return False
 
 
+class UserRecipeSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField()
+
+    class Meta:
+        model = Recipe
+        fields = ("id", "name", "image", "cooking_time")
+
+
 class SubscriptionSerializer(serializers.ModelSerializer):
     email = serializers.ReadOnlyField(source="subscription.email")
     id = serializers.ReadOnlyField(source="subscription.id")
@@ -54,8 +62,5 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         ).exists()
 
     def get_recipes(self, obj):
-        # импорт здесь, чтобы избежать circular import error
-        from recipes.serializers import RecipeShortSerializer
-
         queryset = Recipe.objects.filter(author=obj.subscription)
-        return RecipeShortSerializer(queryset, many=True).data
+        return UserRecipeSerializer(queryset, many=True).data

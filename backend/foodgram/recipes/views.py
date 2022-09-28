@@ -42,10 +42,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         is_in_shopping_cart = self.request.query_params.get(
                                 "is_in_shopping_cart", None)
         tags_ids = self.request.query_params.getlist("tags", None)
-        if is_favorited == 1:
-            queryset = queryset.filter(favorited=True)
-        if is_in_shopping_cart == 1:
-            queryset = queryset.filter(shopping_cart=True)
+        if is_favorited is not None:
+            queryset = queryset.filter(favorited__user=self.request.user)
+        if is_in_shopping_cart is not None:
+            queryset = queryset.filter(shopping_cart__user=self.request.user)
         if tags_ids:
             queryset = queryset.filter(tags__slug__in=tags_ids).distinct()
         if self.action == "get_shopping_cart":

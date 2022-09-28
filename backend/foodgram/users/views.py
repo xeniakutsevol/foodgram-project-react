@@ -63,6 +63,6 @@ class UserViewSet(BaseUserViewSet):
         user = self.request.user
         queryset = Subscription.objects.filter(user=user)
         page = self.paginate_queryset(queryset)
-        serializer = SubscriptionSerializer(data=page, many=True)
-        serializer.is_valid(raise_exception=True)
+        serializer = SubscriptionSerializer(page, many=True)
+        #serializer.is_valid()
         return self.get_paginated_response(serializer.data)

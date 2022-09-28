@@ -38,25 +38,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+        user = self.request.user
         is_favorited = self.request.query_params.get("is_favorited", None)
         is_in_shopping_cart = self.request.query_params.get(
                                 "is_in_shopping_cart", None)
         tags_ids = self.request.query_params.getlist("tags", None)
         if is_favorited is not None:
-            queryset = queryset.filter(favorited__user=self.request.user)
+            queryset = queryset.filter(favorited__user=user)
         if is_in_shopping_cart is not None:
-            queryset = queryset.filter(shopping_cart__user=self.request.user)
+            queryset = queryset.filter(shopping_cart__user=user)
         if tags_ids:
             queryset = queryset.filter(tags__slug__in=tags_ids).distinct()
         if self.action == "get_shopping_cart":
             recipes_in_sc_ids = ShoppingCart.objects.filter(
-                user=self.request.user
-            ).values_list("recipe", flat=True)
+                user=user).values_list("recipe", flat=True)
             queryset = queryset.filter(id__in=recipes_in_sc_ids)
         if self.action == "download_shopping_cart":
             recipes_in_sc_ids = ShoppingCart.objects.filter(
-                user=self.request.user
-            ).values_list("recipe", flat=True)
+                user=user).values_list("recipe", flat=True)
             queryset = (
                 IngredientInRecipe.objects.filter(recipe__in=recipes_in_sc_ids)
                 .values("ingredient__name", "ingredient__measurement_unit")

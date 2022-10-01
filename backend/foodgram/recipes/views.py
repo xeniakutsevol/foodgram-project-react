@@ -40,8 +40,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         user = self.request.user
         is_favorited = self.request.query_params.get("is_favorited", None)
-        is_in_shopping_cart = self.request.query_params.get(
-                                "is_in_shopping_cart", None)
+        is_in_shopping_cart = self.request.query_params.get("is_in_shopping_cart", None)
         tags_ids = self.request.query_params.getlist("tags", None)
         if is_favorited is not None:
             queryset = queryset.filter(favorited__user=user)
@@ -80,22 +79,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeWriteSerializer
 
     def get_permissions(self):
-        if (
-            self.action == "download_shopping_cart"
-            and self.request.method == "GET"
-        ):
+        if (self.action == "download_shopping_cart" and self.request.method == "GET"):
             self.permission_classes = (permissions.IsAuthenticated,)
         elif self.request.method == "GET":
             self.permission_classes = (permissions.AllowAny,)
-        elif (
-            self.action == "add_remove_shopping_cart"
-            and self.request.method == "DELETE"
-        ):
+        elif (self.action == "add_remove_shopping_cart" and self.request.method == "DELETE"):
             self.permission_classes = (ShoppingCartPermission,)
-        elif (
-            self.action == "add_remove_favorite"
-            and self.request.method == "DELETE"
-        ):
+        elif (self.action == "add_remove_favorite" and self.request.method == "DELETE"):
             self.permission_classes = (FavoritedPermission,)
         elif self.request.method in ("PATCH", "DELETE"):
             self.permission_classes = (IsAuthorPermission,)
@@ -113,9 +103,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if request.method == "POST":
             if not obj_exists:
                 ShoppingCart.objects.create(recipe=recipe, user=user)
-                return Response(
-                                serializer.data,
-                                status=status.HTTP_201_CREATED)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(
                 {"errors": "Рецепт уже в списке покупок."},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -144,9 +132,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = 'attachment; filename="to_buy.csv"'
         writer = csv.writer(response)
-        writer.writerow(
-          ["Название ингредиента", "Единицы измерения", "Суммарное количество"]
-        )
+        writer.writerow(["Название ингредиента", "Единицы измерения", "Суммарное количество"])
         for obj in queryset:
             output.append(
                 [

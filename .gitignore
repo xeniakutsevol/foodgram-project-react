@@ -143,3 +143,6 @@ backend/foodgram/media/
 
 # фронтенд
 frontend/
+
+# конфиг flake8
+.flake8

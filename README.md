@@ -1,4 +1,4 @@
-![Foodgram workflow](https://github.com/xeniakutsevol/yamdb_final/actions/workflows/foodgram_workflow.yml/badge.svg)
+![Foodgram workflow](https://github.com/xeniakutsevol/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
 
 # Запуск docker-compose для Foodgram
 

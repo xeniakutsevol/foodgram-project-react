@@ -1,3 +1,5 @@
+![Foodgram workflow](https://github.com/xeniakutsevol/yamdb_final/actions/workflows/foodgram_workflow.yml/badge.svg)
+
 # Запуск docker-compose для Foodgram
 
 ### Описание проекта
@@ -41,7 +43,7 @@ nano .env
 Перейти в репозиторий с Dockerfile и собрать образ:
 
 ```
-cd foodgram/
+cd backend/foodgram/
 ```
 
 ```
@@ -51,7 +53,7 @@ docker build -t foodgram .
 Запустить контейнеры docker-compose:
 
 ```
-cd ../infra/
+cd ../../infra/
 ```
 
 ```
@@ -64,7 +66,7 @@ Cоздать суперпользователя:
 docker-compose exec web python manage.py createsuperuser
 ```
 
-Залить данные из БД:
+Залить данные из БД (на этапе сборки контейнера фикстуры ингредиентов уже предзагружены):
 
 ```
 docker-compose exec web python manage.py loaddata fixtures.json
@@ -73,13 +75,21 @@ docker-compose exec web python manage.py loaddata fixtures.json
 Проверить работоспособность проекта:
 
 ```
+http://localhost/
+```
+
+```
 http://localhost/admin/
 ```
 
-Образ проекта также доступен в DockerHub:
+Образы проекта также доступен в DockerHub:
 
 ```
-xeniakutsevol/foodgram:v1.00.0000
+xeniakutsevol/foodgram_backend:v1.00.0000
+```
+
+```
+xeniakutsevol/foodgram_frontend:v1.00.0000
 ```
 
 ### Как пользоваться проектом

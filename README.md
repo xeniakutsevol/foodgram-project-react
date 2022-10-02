@@ -99,3 +99,17 @@ xeniakutsevol/foodgram_frontend:v1.00.0000
 ```
 http://localhost/api/docs
 ```
+
+### Проект на боевом сервере
+
+```
+http://51.250.87.231/
+```
+
+```
+http://foodgram-kk.ddns.net/
+```
+
+Логин администратора: admin
+
+Пароль администратора: admin

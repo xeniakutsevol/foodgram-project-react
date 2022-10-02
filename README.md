@@ -110,6 +110,6 @@ http://51.250.87.231/
 http://foodgram-kk.ddns.net/
 ```
 
-Логин администратора: admin
+Email администратора: admin@gmail.com
 
 Пароль администратора: admin
